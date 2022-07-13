@@ -59,7 +59,7 @@ state <- pd %>%
 
 ui <- dashboardPage(
   skin = 'purple',
-  dashboardHeader(title = "Policy Deaths Index"),
+  dashboardHeader(title = "Police Deaths Index"),
   dashboardSidebar(
     sidebarMenu(
       menuItem("Introduction", tabName = "intro", icon = icon("info")),
@@ -70,7 +70,7 @@ ui <- dashboardPage(
         menuSubItem("Map by State", tabName = "pg2")
       ),
       menuItem("Cause", tabName = "cause", icon = icon("list-alt")),
-      menuItem("Conclustion", tabName = "conclusion", icon = icon("book")),
+      menuItem("Conclusion", tabName = "conclusion", icon = icon("book")),
       menuItem("Database", tabName = "data", icon = icon("table"))
     )
   ),
