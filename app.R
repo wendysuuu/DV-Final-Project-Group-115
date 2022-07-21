@@ -183,14 +183,14 @@ ui <- dashboardPage(
                 box(
                   title = 'Trend for Human Police Deaths',
                   width = 500,
-                  height = 500,
+                  height = 600,
                   plotlyOutput("plot1", height = 500))
               ),
               fluidRow(
                 box(
                   title = 'Trend for k9 Dog Deaths',
                   width = 500,
-                  height = 500,
+                  height = 600,
                   plotlyOutput("plotdog", height = 500))
                 ),
               ),
@@ -325,15 +325,7 @@ ui <- dashboardPage(
       
       tabItem(tabName = 'data',
               fluidRow(
-                box(
-                  title = 'source',
-                  solidHeader = TRUE,
-                  status = "primary",
-                  width = 12,
-                  collapsible = TRUE,
-                  height = 1500,
                   dataTableOutput('myTable')
-                )
               ) )
     )
   )
