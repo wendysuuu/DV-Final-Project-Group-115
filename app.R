@@ -98,7 +98,7 @@ ui <- dashboardPage(
                      fluidRow(
                        column(
                          6,
-                         tags$li("Casue of Death "),
+                         tags$li("Cause of Death "),
                          tags$li("Department of Police "),
                          tags$li("Date of Death ")
                        ),
