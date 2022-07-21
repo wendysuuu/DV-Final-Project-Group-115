@@ -329,7 +329,7 @@ ui <- dashboardPage(
                   title = 'source',
                   solidHeader = TRUE,
                   status = "primary",
-                  width = 500,
+                  width = 12,
                   collapsible = TRUE,
                   height = 1500,
                   dataTableOutput('myTable')
