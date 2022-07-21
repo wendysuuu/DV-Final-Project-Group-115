@@ -98,14 +98,14 @@ ui <- dashboardPage(
                      fluidRow(
                        column(
                          6,
-                         tags$li(" "),
-                         tags$li(" "),
-                         tags$li(" ")
+                         tags$li("Casue of Death "),
+                         tags$li("Department of Police "),
+                         tags$li("Date of Death ")
                        ),
                        column(
                          6,
-                         tags$li(" "),
-                         tags$li(" ")
+                         tags$li("State of Death "),
+                         tags$li("K9 information ")
                        )
                      ),
                      br(),
@@ -159,14 +159,14 @@ ui <- dashboardPage(
                      fluidRow(
                        column(
                          6,
-                         tags$li("Chang Su"),
-                         tags$li("Fei Gu"),
-                         tags$li("Lydia Zheng")
+                         tags$li("Fei Gu - fgu6@jhu.edu"),
+                         tags$li("Meredith Gu - xgu19@jhu.edu"),
+                         tags$li("Chang Su - csu21@jhu.edu")
                        ),
                        column(
                          6,
-                         tags$li("Weichen Zhao"),
-                         tags$li("Meredith Gu")
+                         tags$li("Weichen Zhao - wzhao36@jhu.edu"),
+                         tags$li("Lydia Zheng - xzheng50@jhu.edu")
                        )
                      ),
                      br(),
@@ -179,15 +179,16 @@ ui <- dashboardPage(
       
       tabItem(tabName = "pg1",
               fluidRow(
+                checkboxInput("with_COVID19", label = "with COVID19", value = FALSE),
                 box(
-                  title = 'human police death trend',
+                  title = 'Trend for Human Police Deaths',
                   width = 500,
                   height = 500,
                   plotlyOutput("plot1", height = 500))
               ),
               fluidRow(
                 box(
-                  title = 'k9 dog death trend',
+                  title = 'Trend for k9 Dog Deaths',
                   width = 500,
                   height = 500,
                   plotlyOutput("plotdog", height = 500))
@@ -217,6 +218,7 @@ ui <- dashboardPage(
                          width = "100%"
                        )),
                        box(
+                         title = "Trend for the Selected State",
                          width = 8,
                          plotlyOutput("plot2")
                        )
@@ -249,7 +251,51 @@ ui <- dashboardPage(
                     status = "primary",
                     width = 12,
                     collapsible = TRUE,
-                    height = 250
+                    height = 480,
+                    column(12,
+                           tags$div(
+                             tags$strong(
+                               "Yearly Cumulative Trend",
+                               ),
+                             br(),
+                           br(),
+                             tags$li("Human Police"),
+                             
+                             tags$span("- From 1791 to date, there are over 25,803 human police officer deaths have been registered. On average, there are about 112 officered died each year.
+"),
+                            br(),
+                             tags$span("- From the graph, we can see the human police deaths number increase at a steady rate. The growing rate has been slightly slowed when the U.S. government passed the first piece of national gun control legislation on June 26, 1934 — The National Firearms Act.
+"),
+                             br(),
+                       
+                             tags$span("- Covid influence: Due to COVID-19, the human police officers death rate increased significantly in the recent three year. There are 771 officers passed away due to COVID-19.
+
+"),
+                             br(),
+                             br(),
+                             tags$li("K9 Dog
+"),
+                        
+                             
+                             tags$span("- K9 dog is the nickname for the police dog, that is specifically trained to assist police and other law enforcement personnel.
+"),
+                            
+                             br(),
+                             tags$span("- From 1791 to date, there are about 487 K9 dog deaths have been registered.
+"),
+                             br(),
+                             br(),
+                             tags$strong("Map
+"),
+                             br(),
+                           br(),
+                          
+                             tags$span("- Texas recorded the highest police death count with 2204, followed by New York with 1868 and California with 1732.
+")
+                            
+                             
+                             
+                             ))
                 )
               ),
               fluidRow(
@@ -258,18 +304,24 @@ ui <- dashboardPage(
                     status = "primary",
                     width = 12,
                     collapsible = TRUE,
-                    height = 250
+                    height = 250,
+                    column(12,
+                           tags$div(
+                             tags$span(
+                               "- As shown on the graph, the top ten major cause of deaths are: gunfire, automobile crash, motorcycle crash, heart attack, vehicular assault, struck by vehicle, COVID-19, vehicle pursuit, assault, and gunfire(inadvertent). 
+"),
+                             br(),
+                             br(),
+                             tags$span("- Among the causes, gunfire caused the most number of deaths. From 1791 to 2022, there are 13,118 officers died because of gunfire, accounting for more than half of the total deaths. 
+"),
+                             br(),
+                             br(),
+                             tags$span("- From 2020, the COVID19 started to become the most common deaths causes among the police officers. In 2021, there are 443 officers died because of COVID19 and only 67 officers died under gun.")
+                               
+                             ))
                 )
               ),
-              fluidRow(
-                box(title = "Covid Influence",
-                    solidHeader = TRUE,
-                    status = "primary",
-                    width = 12,
-                    collapsible = TRUE,
-                    height = 250
-                )
-              )),
+),
       
       tabItem(tabName = 'data',
               fluidRow(
@@ -300,8 +352,15 @@ server <- function(input, output, session) {
   ###ggplot by year###
   output$plot1 = renderPlotly({
     h <- ggplot() + 
-      geom_line(data = us_total, aes(x = Year, y = csum), color = 'red') + 
-      geom_line(data = us_total_noCovid, aes(x = Year, y = csum), color = 'blue')
+      geom_line(data = us_total_noCovid, aes(x = Year, y = csum), color = 'blue') +
+      xlab("Year") + ylab("Total Number of Deaths (Cumulative)")
+    
+    if(input$with_COVID19==TRUE){
+      h <- ggplot() + 
+        geom_line(data = us_total, aes(x = Year, y = csum), color = 'red') + 
+        geom_line(data = us_total_noCovid, aes(x = Year, y = csum), color = 'blue') +
+        xlab("Year") + ylab("Total Number of Deaths (Cumulative)")
+    }
     ggplotly(h)
   })
   
@@ -336,26 +395,31 @@ server <- function(input, output, session) {
       addCircleMarkers(lng = ~Longitude, 
                        lat = ~Latitude, radius = ~N/50,
                        fillColor = "red", 
-                       fillOpacity = 0.8,
+                       fillOpacity = 0.6,
                        weight = 0,
                        label = ~N)
   })
   
   output$plot3 = renderPlot({
-    pd %>%
+    
+    pdd <- pd %>%
       filter(State != 'United States') %>%
       group_by(Cause_of_Death)  %>%
       summarise(n = n())  %>%
       arrange(desc(n)) %>%
-      head(10) %>%
+      head(10) 
+    pdd$group_gun <- c("Gunfire",rep("Others",9))
+    
+    pdd %>%
       ggplot(aes(
         x = reorder(Cause_of_Death,-n),
         y = n,
-        fill = Cause_of_Death
-      )) +
+        fill = group_gun
+      )) + guides(fill=guide_legend(title = "Cause of Deaths"))  +
+      scale_fill_manual(values = c("Gunfire" = "red", "Others" = "grey")) +
       geom_bar(stat = 'identity', position = 'dodge') +
       theme(axis.text.x = element_text(angle = 45)) +
-      labs(x = 'Cause of Deaths', y = 'Deaths', title = 'Top 10 Police deaths by causes')
+      labs(x = 'Cause of Deaths', y = 'Deaths', title = 'Top 10 Police Deaths by Causes')
   })
   
   output$wordcloud = renderPlot({
@@ -368,19 +432,20 @@ server <- function(input, output, session) {
     names(pd_cod) <- c("cod", "count")
     
     color = brewer.pal(8, "Dark2")
-    
+    set.seed(5)
     wordcloud(words = pd_cod$cod,
               freq=pd_cod$count,
               min.freq = 100,
               random.order=F,
               rot.per=0.1,
-              scale=c(4,1),
+              scale=c(8,1),
               colors=color)
     
     output$plotdog = renderPlotly({
       
       g <- ggplot() + 
-        geom_line(data = K9, aes(x = Year, y = csum), color = 'red')
+        geom_line(data = K9, aes(x = Year, y = csum), color = 'Purple') +
+        xlab("Year") + ylab("Total Number of Deaths of K9 Dogs (Cumulative)")
       ggplotly(g)
       
     })
